@@ -18,7 +18,8 @@ class EmojiRemover
         puts "[INFO] :#{code}: をesaから削除しました。"
       else
         response = @esa_client.delete_emoji(code)
-        if response.body['error'].nil?
+
+        if response.body.nil?
           puts "[INFO] :#{code}: をesaから削除しました。"
         else
           puts "[ERROR] #{response.body['message']}"

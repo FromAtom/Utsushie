@@ -10,8 +10,8 @@ class EmojiUploader
     )
     @dry_run = dry_run
 
-    endpoint = "https://api.esa.io/v1/teams/#{ESA_TEAM_NAME}/emojis"
-    headers = { 'Authorization' => "Bearer #{ESA_ACCESS_TOKEN}" }
+    endpoint = "https://api.esa.io/v1/teams/#{esa_team_name}/emojis"
+    headers = { 'Authorization' => "Bearer #{esa_access_token}" }
 
     uri = URI.parse(endpoint)
     @https = Net::HTTP.new(uri.host, uri.port)

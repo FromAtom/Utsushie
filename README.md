@@ -1,5 +1,5 @@
 # Utsushie
-Slackに登録されているCustom Emojiをesaにコピーするツールです。なお、[esaのカスタム絵文字仕様](https://docs.esa.io/posts/226)に準拠していないCustom Emojiは無視されます。
+Utsushie (写し絵) はSlackに登録されているCustom Emojiをesaにコピーするツールです。なお、[esaのカスタム絵文字仕様](https://docs.esa.io/posts/226)に準拠していないCustom Emojiは無視されます。
 
 ## Usage
 :warning: Slackに登録されているCustom Emojiの数によって、非常に時間がかかります。
@@ -34,3 +34,5 @@ bundle exec ruby app.rb --dry-run
 - `ESA_ACCESS_TOKEN` : ReadとWrite権限が必要です。
 - `ESA_TEAM_NAME` : `https://[ESA_TEAM_NAME].esa.io/`
 
+## LICENSE
+- [MIT](LICENSE)

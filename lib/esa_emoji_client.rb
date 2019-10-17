@@ -21,8 +21,12 @@ class EsaEmojiClient
   end
 
   def get_all_custom_emojis
-    @existing_emojis = @esa_client.emojis.body['emojis'] if @existing_emojis.empty?
-    return @existing_emojis.select {|emoji| emoji['category'] == "Custom"}
+    return @existing_emojis unless @existing_emojis.empty?
+
+    emojis = @esa_client.emojis.body['emojis']
+    custom_emojis = emojis.select {|emoji| emoji['category'] == "Custom"}
+    @existing_emojis = custom_emojis.map {|emoji| Emoji.new(emoji['code'], emoji['url'])}
+    return @existing_emojis
   end
 
   def add(emoji, filepath)
@@ -84,8 +88,7 @@ class EsaEmojiClient
   def remove_all
     emojis = get_all_custom_emojis
     emojis.each do |emoji|
-      code = emoji['code']
-      remove(code)
+      remove(emoji.name)
       sleep 1 unless @dry_run
     end
   end

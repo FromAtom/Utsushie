@@ -31,7 +31,13 @@ end
 ## Slackからすべてのカスタム絵文字を取得
 slack = Slack.new SLACK_OAUTH_ACCESS_TOKEN
 all_emojis = slack.emojis
-alias_emojis, emojis = all_emojis.partition(&:alias?)
+
+## esaからすべてのカスタム絵文字を取得
+existing_emojis = esa_emoji_client.get_all_custom_emojis
+
+## すでにesaに登録されている絵文字は対象外にする
+new_emojis = all_emojis.reject { |emoji| existing_emojis.include?(emoji) }
+alias_emojis, emojis = new_emojis.partition(&:alias?)
 
 ## SlackからDLした絵文字画像を保存するフォルダを準備
 Dir.mkdir(IMAGE_BUFFER_DIR) if not Dir.exist?(IMAGE_BUFFER_DIR)

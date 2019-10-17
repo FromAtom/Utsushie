@@ -116,7 +116,7 @@ class EsaEmojiClient
 
   private
   def allowed_name?(name)
-    return (/[a-z\-_]+/ =~ name)
+    return (/[a-z\d\-_]+/ =~ name)
   end
 
   def allowed_extension?(extension)

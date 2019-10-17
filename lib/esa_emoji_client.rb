@@ -25,7 +25,14 @@ class EsaEmojiClient
 
     emojis = @esa_client.emojis.body['emojis']
     custom_emojis = emojis.select {|emoji| emoji['category'] == "Custom"}
-    @existing_emojis = custom_emojis.map {|emoji| Emoji.new(emoji['code'], emoji['url'])}
+
+    buffer = []
+    custom_emojis.each do |emoji|
+      url = emoji['url']
+      buffer << emoji['aliases'].map {|code| Emoji.new(code, url)}
+    end
+
+    @existing_emojis = buffer.flatten
     return @existing_emojis
   end
 

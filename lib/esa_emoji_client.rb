@@ -17,11 +17,12 @@ class EsaEmojiClient
     @https = Net::HTTP.new(uri.host, uri.port)
     @https.use_ssl = true
     @request = Net::HTTP::Post.new(uri.path, initheader = headers)
+    @existing_emojis = []
   end
 
   def get_all_custom_emojis
-    emojis = @esa_client.emojis.body['emojis']
-    return emojis.select {|emoji| emoji['category'] == "Custom"}
+    @existing_emojis = @esa_client.emojis.body['emojis'] if @existing_emojis.empty?
+    return @existing_emojis.select {|emoji| emoji['category'] == "Custom"}
   end
 
   def add(emoji, filepath)

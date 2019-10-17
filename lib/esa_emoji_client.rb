@@ -1,6 +1,6 @@
 require 'esa'
 
-class EmojiUploader
+class EsaEmojiClient
   class TooManyRequestError < StandardError; end
 
   def initialize(esa_access_token, esa_team_name, dry_run)
@@ -17,6 +17,23 @@ class EmojiUploader
     @https = Net::HTTP.new(uri.host, uri.port)
     @https.use_ssl = true
     @request = Net::HTTP::Post.new(uri.path, initheader = headers)
+    @existing_emojis = []
+  end
+
+  def get_all_custom_emojis
+    return @existing_emojis unless @existing_emojis.empty?
+
+    emojis = @esa_client.emojis.body['emojis']
+    custom_emojis = emojis.select {|emoji| emoji['category'] == "Custom"}
+
+    buffer = []
+    custom_emojis.each do |emoji|
+      url = emoji['url']
+      buffer << emoji['aliases'].map {|code| Emoji.new(code, url)}
+    end
+
+    @existing_emojis = buffer.flatten
+    return @existing_emojis
   end
 
   def add(emoji, filepath)
@@ -72,6 +89,28 @@ class EmojiUploader
       puts "[INFO] :#{name}: を :#{target_name}: のエイリアスとして登録しました。"
     else
       puts "[ERROR] エイリアス対象の :#{target_name}: が見つからないか、 :#{name}: がすでに登録されています。"
+    end
+  end
+
+  def remove_all
+    emojis = get_all_custom_emojis
+    emojis.each do |emoji|
+      remove(emoji.name)
+      sleep 1 unless @dry_run
+    end
+  end
+
+  def remove(code)
+    if @dry_run
+      puts "[INFO] :#{code}: をesaから削除しました。"
+    else
+      response = @esa_client.delete_emoji(code)
+
+      if response.body.nil?
+        puts "[INFO] :#{code}: をesaから削除しました。"
+      else
+        puts "[ERROR] #{response.body['message']}"
+      end
     end
   end
 

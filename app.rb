@@ -4,8 +4,7 @@ require 'fileutils'
 
 require_relative 'lib/emoji'
 require_relative 'lib/slack'
-require_relative 'lib/emoji_uploader'
-require_relative 'lib/emoji_remover'
+require_relative 'lib/esa_emoji_client'
 
 SLACK_OAUTH_ACCESS_TOKEN = ENV['SLACK_OAUTH_ACCESS_TOKEN']
 ESA_ACCESS_TOKEN = ENV['ESA_ACCESS_TOKEN']
@@ -22,21 +21,27 @@ end
 options = ARGV.getopts('', 'clean', 'dry-run')
 dry_run = options['dry-run']
 
+esa_emoji_client = EsaEmojiClient.new(ESA_ACCESS_TOKEN, ESA_TEAM_NAME, dry_run)
+
 if options['clean']
   ## esaに登録されているすべてのemojiを削除する
-  emoji_remover = EmojiRemover.new(ESA_ACCESS_TOKEN, ESA_TEAM_NAME, dry_run)
-  emoji_remover.remove_all
+  esa_emoji_client.remove_all
 end
 
 ## Slackからすべてのカスタム絵文字を取得
 slack = Slack.new SLACK_OAUTH_ACCESS_TOKEN
 all_emojis = slack.emojis
-alias_emojis, emojis = all_emojis.partition(&:alias?)
+
+## esaからすべてのカスタム絵文字を取得
+existing_emojis = esa_emoji_client.get_all_custom_emojis
+
+
+## すでにesaに登録されている絵文字は対象外にする
+new_emojis = all_emojis.reject { |emoji| existing_emojis.include?(emoji) }
+alias_emojis, emojis = new_emojis.partition(&:alias?)
 
 ## SlackからDLした絵文字画像を保存するフォルダを準備
 Dir.mkdir(IMAGE_BUFFER_DIR) if not Dir.exist?(IMAGE_BUFFER_DIR)
-
-emoji_uploader = EmojiUploader.new(ESA_ACCESS_TOKEN, ESA_TEAM_NAME, dry_run)
 
 emojis.each do |emoji|
   path = "./#{IMAGE_BUFFER_DIR}/#{emoji.filename}"
@@ -50,7 +55,7 @@ emojis.each do |emoji|
     end
   end
 
-  emoji_uploader.add(emoji, path)
+  esa_emoji_client.add(emoji, path)
 
   unless dry_run
     FileUtils.rm(path)
@@ -60,6 +65,6 @@ end
 
 # エイリアスの登録処理
 alias_emojis.each do |emoji|
-  emoji_uploader.add_alias(emoji.name, emoji.alias_target_name)
+  esa_emoji_client.add_alias(emoji.name, emoji.alias_target_name)
   sleep 1 unless dry_run
 end

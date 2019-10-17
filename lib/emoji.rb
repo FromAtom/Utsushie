@@ -27,4 +27,8 @@ class Emoji
   def alias?
     @url.start_with?('alias')
   end
+
+  def ==(other)
+    self.name == other.name
+  end
 end

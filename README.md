@@ -1,4 +1,5 @@
-# Utsushie
+![logo](logo.png)
+
 Utsushie (写し絵) はSlackに登録されているCustom Emojiをesaにコピーするツールです。なお、[esaのカスタム絵文字仕様](https://docs.esa.io/posts/226)に準拠していないCustom Emojiは無視されます。
 
 ## Usage
@@ -36,3 +37,6 @@ bundle exec ruby app.rb --dry-run
 
 ## LICENSE
 - [MIT](LICENSE)
+
+## Note
+Icon made by Freepik from [www.flaticon.com](www.flaticon.com)

@@ -39,4 +39,4 @@ bundle exec ruby app.rb --dry-run
 - [MIT](LICENSE)
 
 ## Note
-Icon made by Freepik from [www.flaticon.com](www.flaticon.com)
+Icon made by Freepik from [www.flaticon.com](https://www.flaticon.com)

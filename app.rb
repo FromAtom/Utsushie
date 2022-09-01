@@ -48,7 +48,7 @@ emojis.each do |emoji|
 
   # EmojiをDLする
   unless dry_run
-    open(emoji.url) do |file|
+    URI.open(emoji.url) do |file|
       open(path, "w+b") do |out|
         out.write(file.read)
       end

@@ -1,6 +1,7 @@
 require 'optparse'
 require 'open-uri'
 require 'fileutils'
+require 'dotenv/load'
 
 require_relative 'lib/emoji'
 require_relative 'lib/slack'
@@ -34,7 +35,6 @@ all_emojis = slack.emojis
 
 ## esaからすべてのカスタム絵文字を取得
 existing_emojis = esa_emoji_client.get_all_custom_emojis
-
 
 ## すでにesaに登録されている絵文字は対象外にする
 new_emojis = all_emojis.reject { |emoji| existing_emojis.include?(emoji) }

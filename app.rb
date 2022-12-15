@@ -1,6 +1,7 @@
 require 'optparse'
 require 'open-uri'
 require 'fileutils'
+require 'dotenv/load'
 
 require_relative 'lib/emoji'
 require_relative 'lib/slack'

@@ -11,6 +11,28 @@ SLACK_OAUTH_ACCESS_TOKEN = ENV['SLACK_OAUTH_ACCESS_TOKEN']
 ESA_ACCESS_TOKEN = ENV['ESA_ACCESS_TOKEN']
 ESA_TEAM_NAME = ENV['ESA_TEAM_NAME']
 IMAGE_BUFFER_DIR = "images"
+ESA_DEFAULT_EMOJIS = [
+  'bowtie',
+  'squirrel',
+  'neckbeard',
+  'metal',
+  'fu',
+  'feelsgood',
+  'finnadie',
+  'goberserk',
+  'godmode',
+  'hurtrealbad',
+  'rage1',
+  'rage2',
+  'rage3',
+  'rage4',
+  'suspect',
+  'trollface',
+  'octocat',
+  'biohazard',
+  'esa',
+  'unicorn'
+]
 
 if SLACK_OAUTH_ACCESS_TOKEN.nil? || ESA_ACCESS_TOKEN.nil? || ESA_TEAM_NAME.nil?
   puts "[ERROR]: Require ENV['SLACK_OAUTH_ACCESS_TOKEN']." if SLACK_OAUTH_ACCESS_TOKEN.nil?
@@ -37,7 +59,7 @@ all_emojis = slack.emojis
 existing_emojis = esa_emoji_client.get_all_custom_emojis
 
 ## すでにesaに登録されている絵文字は対象外にする
-new_emojis = all_emojis.reject { |emoji| existing_emojis.include?(emoji) }
+new_emojis = all_emojis.reject { |emoji| existing_emojis.include?(emoji) || ESA_DEFAULT_EMOJIS.include?(emoji.name) }
 alias_emojis, emojis = new_emojis.partition(&:alias?)
 
 ## SlackからDLした絵文字画像を保存するフォルダを準備

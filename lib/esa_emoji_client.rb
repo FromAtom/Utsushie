@@ -77,6 +77,10 @@ class EsaEmojiClient
       puts "[ERROR] 絵文字の名前( :#{name}: ) には小文字の英数字と、アンダースコア(_)、ハイフン(-)のみが使用できます。"
       return
     end
+    unless allowed_name?(target_name)
+      puts "[ERROR] 絵文字の名前( :#{target_name}: ) には小文字の英数字と、アンダースコア(_)、ハイフン(-)のみが使用できます。"
+      return
+    end
 
     if @dry_run
       puts "[INFO] :#{name}: を :#{target_name}: のエイリアスとして登録しました。"
@@ -116,7 +120,7 @@ class EsaEmojiClient
 
   private
   def allowed_name?(name)
-    return (/[a-z\d\-_]+/ =~ name)
+    return (/^[0-9a-zA-Z\-\_]+$/ =~ name)
   end
 
   def allowed_extension?(extension)

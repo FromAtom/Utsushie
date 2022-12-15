@@ -36,7 +36,6 @@ all_emojis = slack.emojis
 ## esaからすべてのカスタム絵文字を取得
 existing_emojis = esa_emoji_client.get_all_custom_emojis
 
-
 ## すでにesaに登録されている絵文字は対象外にする
 new_emojis = all_emojis.reject { |emoji| existing_emojis.include?(emoji) }
 alias_emojis, emojis = new_emojis.partition(&:alias?)
